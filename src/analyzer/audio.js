@@ -1,4 +1,10 @@
 import * as R from "ramda";
+import { setInterval } from "timers";
+
+let prevTime = Date.now();
+let bufferArray = [];
+let arraySize = 0;
+const arrayMax = 4;
 
 export const render = () => {
     const audioContext = new AudioContext();
@@ -13,13 +19,25 @@ export const render = () => {
     
     const frequencyData = new Uint8Array(analyser.frequencyBinCount);
 
-    const renderFrame = () => { 
+    const renderFrame = () => {
        requestAnimationFrame(renderFrame);
        //analyser.getByteFrequencyData(frequencyData);
        analyser.getByteTimeDomainData(frequencyData);
 
        //console.log(calculateAverageFromFrequencyData(frequencyData));
-       const averageFrequency = calculateAverageFromFrequencyData(frequencyData);
+       //const averageFrequency = calculateAverageFromFrequencyData(frequencyData);
+       if (bufferArray.length >= arrayMax) {
+            const newTime = Date.now();
+            const diff = newTime - prevTime;
+            console.log(diff);
+            prevTime = Date.now();
+            console.log(bufferArray);
+            bufferArray = [];
+       }
+       else {
+            buffer(calculateAverageFromFrequencyData(frequencyData));
+       }
+       /*
         if (averageFrequency > 199) {
             console.log("boom!");
         }
@@ -30,10 +48,10 @@ export const render = () => {
         else if (averageFrequency > 130 && averageFrequency < 140) {
             console.log("singing!");
         }
-        */
+        
         else if (averageFrequency > 60 && averageFrequency < 80) {
             console.log("strum!");
-        }
+        }*/
         /*
         else if (averageFrequency > 100 && averageFrequency < 199) {
             console.log("blamo!");
@@ -45,6 +63,10 @@ export const render = () => {
     }
     audio.play();
     renderFrame();
+}
+
+const buffer = (chunk) => {
+    bufferArray = bufferArray.concat(chunk);
 }
 
 const calculateAverageFromFrequencyData = (frequencyData) => {
