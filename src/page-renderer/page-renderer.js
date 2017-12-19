@@ -19,7 +19,7 @@ export const renderAudio = () => {
 
 export const fixedCanvas = (width, height) => {
     const canvas = document.createElement("canvas");
-    canvas.id = "canvas";
+    canvas.id = "canvas-field";
     canvas.width = width;
     canvas.height = height;
     return canvas;
