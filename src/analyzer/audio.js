@@ -29,36 +29,14 @@ export const render = () => {
        if (bufferArray.length >= arrayMax) {
             const newTime = Date.now();
             const diff = newTime - prevTime;
-            console.log(diff);
             prevTime = Date.now();
-            console.log(bufferArray);
+            // multiply amount of relays received in a chunk with diff time to determine how long relay for corresponding led strip equalizer should be on
+            dummyVisualise(bufferArray);
             bufferArray = [];
        }
        else {
             buffer(calculateAverageFromFrequencyData(frequencyData));
        }
-       /*
-        if (averageFrequency > 199) {
-            console.log("boom!");
-        }
-        else if (averageFrequency > 170 && averageFrequency < 199) {
-            console.log("blamo!");
-        }
-        /*
-        else if (averageFrequency > 130 && averageFrequency < 140) {
-            console.log("singing!");
-        }
-        
-        else if (averageFrequency > 60 && averageFrequency < 80) {
-            console.log("strum!");
-        }*/
-        /*
-        else if (averageFrequency > 100 && averageFrequency < 199) {
-            console.log("blamo!");
-        }
-        else if (averageFrequency > 100 && averageFrequency < 199) {
-            console.log("blamo!");
-        }*/
        //R.forEach((element) => console.log(element), frequencyData);
     }
     audio.play();
@@ -67,6 +45,28 @@ export const render = () => {
 
 const buffer = (chunk) => {
     bufferArray = bufferArray.concat(chunk);
+}
+
+const dummyVisualise = (array) => {
+    R.forEach((averageFrequency) => {
+        const relayType = returnRelayType(averageFrequency);
+        relayType === undefined ? undefined : console.log(relayType);
+    }, array);
+}
+
+const returnRelayType = (averageFrequency) => {
+    if (averageFrequency > 199) {
+        //console.log("boom!");
+        return "boom"
+    }
+    else if (averageFrequency > 170 && averageFrequency < 199) {
+        //console.log("blamo!");
+        return "blamo";
+    }
+    else if (averageFrequency > 130 && averageFrequency < 140) {
+        //console.log("singing!");
+        return "singing";
+    }
 }
 
 const calculateAverageFromFrequencyData = (frequencyData) => {
