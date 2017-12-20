@@ -2,15 +2,13 @@ import * as R from "ramda";
 import { setInterval } from "timers";
 
 let prevTime = Date.now();
-let bufferArray = [];
-let arraySize = 0;
-const arrayMax = 100;
-
 const settings = {
+    fftSize: 512,
+    samplingTime: 500,
     highThresholdMin: 180,
-    midThresholdMin: 140,
-    lowThresholdMin: 100,
-    boomThresholdMin: 10,
+    midThresholdMin: 180,
+    lowThresholdMin: 180,
+    boomThresholdMin: 120,
 }
 
 export const render = () => {
@@ -19,7 +17,9 @@ export const render = () => {
     const canvas = document.getElementById("canvas-field");
     const audioSrc = audioContext.createMediaElementSource(audio);
     const analyser = audioContext.createAnalyser();
-    analyser.fftSize = 32;
+    const sampleRate = audioContext.sampleRate;
+    console.log(sampleRate);
+    analyser.fftSize = settings.fftSize;
 
     audioSrc.connect(analyser);
     audioSrc.connect(audioContext.destination);
@@ -29,16 +29,34 @@ export const render = () => {
     const renderFrame = () => {
        requestAnimationFrame(renderFrame);
        analyser.getByteFrequencyData(frequencyData);
-       const highRange = calculateAverageFromFrequencyData([frequencyData[1], frequencyData[2], frequencyData[3]]);
-       const midRange = calculateAverageFromFrequencyData([frequencyData[4], frequencyData[5], frequencyData[6]]);
-       const lowRange = calculateAverageFromFrequencyData([frequencyData[7], frequencyData[8], frequencyData[9]]);
-       const boomRange = calculateAverageFromFrequencyData([frequencyData[13]]);
-       //console.log(frequencyData[1], frequencyData[2], frequencyData[3]);
-       console.log(relayPositions(highRange, midRange, lowRange, boomRange));
-       //relayPositions(highRange, midRange, lowRange, boomRange)
+       const currentTime = Date.now();
+       if (currentTime - prevTime > settings.samplingTime) {
+            console.log(frequencyPicker(settings.fftSize, sampleRate, 48000));
+            pickSample(frequencyData);
+            prevTime = currentTime;
+       } 
     }
     audio.play();
     renderFrame();
+}
+
+const frequencyPicker = (fftSize, samplerate, hz) => {
+    //the frequency bands are split equally, so each element N of your array corresponds to:
+    //ArrayElement * samplerate/fftSize = Hz
+    // (fftSize / sampleRate) * Hz = ArrayElement
+    const n = (fftSize / samplerate) * hz;
+    return Math.round(n);
+}
+
+const pickSample = (frequencyData) => {
+    
+    /*const highRange = frequencyData[frequencyPicker(200)];
+    const midRange = frequencyData[frequencyPicker(200)];
+    const lowRange = frequencyData[frequencyPicker(200)];
+    const boomRange = frequencyData[frequencyPicker(200)];
+    console.log(frequencyData);
+    console.log(relayPositions(highRange, midRange, lowRange, boomRange));
+    //relayPositions(highRange, midRange, lowRange, boomRange)*/
 }
 
 const relayPositions = (high, mid, low, boom) => {
@@ -55,8 +73,6 @@ const visualize = (frequency, minThreshold) => frequency > minThreshold ? "on" :
 const buffer = (chunk) => {
     bufferArray = bufferArray.concat(chunk);
 }
-
-
 
 const calculateAverageFromFrequencyData = (frequencies) => {
     let sum = 0;
