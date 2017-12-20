@@ -4,7 +4,7 @@ import { setInterval } from "timers";
 let prevTime = Date.now();
 let bufferArray = [];
 let arraySize = 0;
-const arrayMax = 4;
+const arrayMax = 10;
 
 export const render = () => {
     const audioContext = new AudioContext();
@@ -27,11 +27,12 @@ export const render = () => {
        //console.log(calculateAverageFromFrequencyData(frequencyData));
        //const averageFrequency = calculateAverageFromFrequencyData(frequencyData);
        if (bufferArray.length >= arrayMax) {
+           //console.log("l:" + bufferArray.length)
             const newTime = Date.now();
             const diff = newTime - prevTime;
             prevTime = Date.now();
             // multiply amount of relays received in a chunk with diff time to determine how long relay for corresponding led strip equalizer should be on
-            dummyVisualise(bufferArray);
+            console.log(dummyVisualise(bufferArray));
             bufferArray = [];
        }
        else {
@@ -48,24 +49,28 @@ const buffer = (chunk) => {
 }
 
 const dummyVisualise = (array) => {
-    R.forEach((averageFrequency) => {
+    /*R.forEach((averageFrequency) => {
         const relayType = returnRelayType(averageFrequency);
         relayType === undefined ? undefined : console.log(relayType);
-    }, array);
+    }, array);*/
+    const uniqueSounds = R.uniq(R.map(returnRelayType, array));
+    const nonNullUniqueSounds = R.reject(R.isNil, uniqueSounds);
+    return nonNullUniqueSounds;
+    //return returnRelayType(calculateAverageFromFrequencyData(array));
 }
 
 const returnRelayType = (averageFrequency) => {
-    if (averageFrequency > 199) {
-        //console.log("boom!");
-        return "boom"
+    if (averageFrequency > 150) {
+        return "boom";
     }
-    else if (averageFrequency > 170 && averageFrequency < 199) {
-        //console.log("blamo!");
-        return "blamo";
+    else if (averageFrequency > 129 && averageFrequency < 140) {
+        return "guitars";
     }
-    else if (averageFrequency > 130 && averageFrequency < 140) {
-        //console.log("singing!");
+    else if (averageFrequency > 110 && averageFrequency < 121) {
         return "singing";
+    }
+    else {
+        return undefined;
     }
 }
 
