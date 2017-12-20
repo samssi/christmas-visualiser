@@ -4,7 +4,13 @@ import { setInterval } from "timers";
 let prevTime = Date.now();
 let bufferArray = [];
 let arraySize = 0;
-const arrayMax = 25;
+const arrayMax = 100;
+/*const ignoreHighRange = [0];
+const highRange = [1,2,3];
+const midRange = [4,5,6];
+const lowRange = [7,8,9];
+const boomRange = [10,11,12];
+const ignoreLow = [13,14,15];*/
 
 export const render = () => {
     const audioContext = new AudioContext();
@@ -22,19 +28,11 @@ export const render = () => {
     const renderFrame = () => {
        requestAnimationFrame(renderFrame);
        analyser.getByteFrequencyData(frequencyData);
-       //analyser.getByteTimeDomainData(frequencyData);
-       if (bufferArray.length >= arrayMax) {
-            const newTime = Date.now();
-            const diff = newTime - prevTime;
-            prevTime = Date.now();
-            // multiply amount of relays received in a chunk with diff time to determine how long relay for corresponding led strip equalizer should be on
-            console.log(dummyVisualise(bufferArray));
-            bufferArray = [];
-       }
-       else {
-            buffer(calculateAverageFromFrequencyData(frequencyData));
-       }
-       //R.forEach((element) => console.log(element), frequencyData);
+       const highRange = calculateAverageFromFrequencyData([frequencyData[1,2,3]]);
+       const midRange = calculateAverageFromFrequencyData([frequencyData[4,5,6]]);
+       const lowRange = calculateAverageFromFrequencyData([frequencyData[7,8,9]]);
+       const boomRange = calculateAverageFromFrequencyData([frequencyData[10,11,12]]);
+       console.log([highRange, midRange, lowRange, boomRange]);
     }
     audio.play();
     renderFrame();
@@ -44,23 +42,18 @@ const buffer = (chunk) => {
     bufferArray = bufferArray.concat(chunk);
 }
 
-const dummyVisualise = (array) => {
-    const uniqueSounds = R.uniq(R.map(returnRelayType, array));
-    const nonNullUniqueSounds = R.reject(R.isNil, uniqueSounds);
-    return nonNullUniqueSounds;
-}
-
 const returnRelayType = (averageFrequency) => {
     if (averageFrequency > 150) {
-        return "boom";
+        return "low";
     }
     else if (averageFrequency > 108 && averageFrequency < 150) {
-        return "singing";
+        return "mid";
     }
-    else if (averageFrequency > 82 && averageFrequency < 108) {
-        return "guitars";
+    else if (averageFrequency > 0 && averageFrequency < 500) {
+        return "high";
     }
     else {
+        console.log(averageFrequency);
         return undefined;
     }
 }
