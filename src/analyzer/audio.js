@@ -5,11 +5,11 @@ import { relayClient } from "./axios-client";
 let prevTime = Date.now();
 const settings = {
     fftSize: 512,
-    samplingTime: 100,
+    samplingTime: 20,
     highThresholdMin: 200,
     midThresholdMin: 200,
     lowThresholdMin: 200,
-    boomThresholdMin: 235
+    boomThresholdMin: 250
     //boomThresholdMin: 230
 }
 
@@ -61,6 +61,7 @@ const pickSample = (frequencyData, sampleRate) => {
     const highRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 255)];
     const midRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 750)];
     const lowRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 800)];
+    //125-128
     const boomRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 125)];
     //console.log(relayPositions(highRange, midRange, lowRange, boomRange));
     return relayPositions(highRange, midRange, lowRange, boomRange)
