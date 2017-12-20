@@ -4,7 +4,7 @@ import { setInterval } from "timers";
 let prevTime = Date.now();
 let bufferArray = [];
 let arraySize = 0;
-const arrayMax = 10;
+const arrayMax = 25;
 
 export const render = () => {
     const audioContext = new AudioContext();
@@ -21,13 +21,9 @@ export const render = () => {
 
     const renderFrame = () => {
        requestAnimationFrame(renderFrame);
-       //analyser.getByteFrequencyData(frequencyData);
-       analyser.getByteTimeDomainData(frequencyData);
-
-       //console.log(calculateAverageFromFrequencyData(frequencyData));
-       //const averageFrequency = calculateAverageFromFrequencyData(frequencyData);
+       analyser.getByteFrequencyData(frequencyData);
+       //analyser.getByteTimeDomainData(frequencyData);
        if (bufferArray.length >= arrayMax) {
-           //console.log("l:" + bufferArray.length)
             const newTime = Date.now();
             const diff = newTime - prevTime;
             prevTime = Date.now();
@@ -63,11 +59,11 @@ const returnRelayType = (averageFrequency) => {
     if (averageFrequency > 150) {
         return "boom";
     }
-    else if (averageFrequency > 129 && averageFrequency < 140) {
-        return "guitars";
-    }
-    else if (averageFrequency > 110 && averageFrequency < 121) {
+    else if (averageFrequency > 143 && averageFrequency < 150) {
         return "singing";
+    }
+    else if (averageFrequency > 82 && averageFrequency < 108) {
+        return "guitars";
     }
     else {
         return undefined;
