@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.17.1",
     "babel-loader": "^7.1.2",
     "html-loader": "^0.5.1",
     "ramda": "^0.25.0"

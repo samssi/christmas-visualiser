@@ -1,5 +1,6 @@
 import * as R from "ramda";
 import { setInterval } from "timers";
+import { relayClient } from "./axios-client";
 
 let prevTime = Date.now();
 const settings = {
@@ -8,7 +9,8 @@ const settings = {
     highThresholdMin: 200,
     midThresholdMin: 200,
     lowThresholdMin: 200,
-    boomThresholdMin: 230,
+    boomThresholdMin: 235
+    //boomThresholdMin: 230
 }
 
 export const render = () => {
@@ -31,12 +33,20 @@ export const render = () => {
        analyser.getByteFrequencyData(frequencyData);
        const currentTime = Date.now();
        if (currentTime - prevTime > settings.samplingTime) {
-            console.log(pickSample(frequencyData, sampleRate));
+            const currentRelayPositions = pickSample(frequencyData, sampleRate);
+            post(currentRelayPositions);
+            console.log(currentRelayPositions);
             prevTime = currentTime;
        } 
     }
     audio.play();
     renderFrame();
+}
+
+const post = (currentRelayPositions) => {
+    relayClient.post("/api/relay", currentRelayPositions)
+        .then((response) => console.log(response))
+        .catch((error) => console.log(error));
 }
 
 const frequencyPicker = (fftSize, samplerate, hz) => {
