@@ -77,7 +77,3 @@ const relayPositions = (high, mid, low, boom) => {
 }
 
 const visualize = (frequency, minThreshold) => frequency > minThreshold ? "on" : "off";
-
-const buffer = (chunk) => {
-    bufferArray = bufferArray.concat(chunk);
-}
