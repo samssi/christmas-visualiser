@@ -4,11 +4,11 @@ import { setInterval } from "timers";
 let prevTime = Date.now();
 const settings = {
     fftSize: 512,
-    samplingTime: 500,
-    highThresholdMin: 180,
-    midThresholdMin: 180,
-    lowThresholdMin: 180,
-    boomThresholdMin: 120,
+    samplingTime: 100,
+    highThresholdMin: 200,
+    midThresholdMin: 200,
+    lowThresholdMin: 200,
+    boomThresholdMin: 230,
 }
 
 export const render = () => {
@@ -31,8 +31,7 @@ export const render = () => {
        analyser.getByteFrequencyData(frequencyData);
        const currentTime = Date.now();
        if (currentTime - prevTime > settings.samplingTime) {
-            console.log(frequencyPicker(settings.fftSize, sampleRate, 48000));
-            pickSample(frequencyData);
+            console.log(pickSample(frequencyData, sampleRate));
             prevTime = currentTime;
        } 
     }
@@ -48,15 +47,13 @@ const frequencyPicker = (fftSize, samplerate, hz) => {
     return Math.round(n);
 }
 
-const pickSample = (frequencyData) => {
-    
-    /*const highRange = frequencyData[frequencyPicker(200)];
-    const midRange = frequencyData[frequencyPicker(200)];
-    const lowRange = frequencyData[frequencyPicker(200)];
-    const boomRange = frequencyData[frequencyPicker(200)];
-    console.log(frequencyData);
-    console.log(relayPositions(highRange, midRange, lowRange, boomRange));
-    //relayPositions(highRange, midRange, lowRange, boomRange)*/
+const pickSample = (frequencyData, sampleRate) => {
+    const highRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 255)];
+    const midRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 750)];
+    const lowRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 800)];
+    const boomRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 125)];
+    //console.log(relayPositions(highRange, midRange, lowRange, boomRange));
+    return relayPositions(highRange, midRange, lowRange, boomRange)
 }
 
 const relayPositions = (high, mid, low, boom) => {
@@ -72,12 +69,4 @@ const visualize = (frequency, minThreshold) => frequency > minThreshold ? "on" :
 
 const buffer = (chunk) => {
     bufferArray = bufferArray.concat(chunk);
-}
-
-const calculateAverageFromFrequencyData = (frequencies) => {
-    let sum = 0;
-    for (let i = 0; i < frequencies.length; i++) {
-        sum = sum + frequencies[i];
-    }
-    return Math.round(sum / frequencies.length);
 }
