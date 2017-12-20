@@ -45,21 +45,16 @@ const buffer = (chunk) => {
 }
 
 const dummyVisualise = (array) => {
-    /*R.forEach((averageFrequency) => {
-        const relayType = returnRelayType(averageFrequency);
-        relayType === undefined ? undefined : console.log(relayType);
-    }, array);*/
     const uniqueSounds = R.uniq(R.map(returnRelayType, array));
     const nonNullUniqueSounds = R.reject(R.isNil, uniqueSounds);
     return nonNullUniqueSounds;
-    //return returnRelayType(calculateAverageFromFrequencyData(array));
 }
 
 const returnRelayType = (averageFrequency) => {
     if (averageFrequency > 150) {
         return "boom";
     }
-    else if (averageFrequency > 143 && averageFrequency < 150) {
+    else if (averageFrequency > 108 && averageFrequency < 150) {
         return "singing";
     }
     else if (averageFrequency > 82 && averageFrequency < 108) {
