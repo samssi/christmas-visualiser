@@ -4,13 +4,7 @@ import { relayClient } from "./axios-client";
 
 let prevTime = Date.now();
 const settings = {
-    fftSize: 4096,
-    samplingTime: 20,
-    highThresholdMin: 200,
-    midThresholdMin: 200,
-    lowThresholdMin: 200,
-    boomThresholdMin: 230
-    //boomThresholdMin: 230
+    fftSize: 1024
 }
 
 export const render = () => {
@@ -57,20 +51,45 @@ const frequencyPicker = (fftSize, samplerate, hz) => {
     return Math.round(n);
 }
 
+const gainDetector = (frequencyData, sampleRate, low, high, dbRate) => {
+    const lowN = frequencyPicker(settings.fftSize, sampleRate, low);
+    const highN = frequencyPicker(settings.fftSize, sampleRate, high);
+    //200-350
+    for (let i = lowN; i < highN; i++) {
+        if (frequencyData[i] >= dbRate) {
+            return "on";
+        }
+    }
+    return "off";
+    
+
+} 
+
 const pickSample = (frequencyData, sampleRate) => {
-    const highRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 255)];
-    const midRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 750)];
-    const lowRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 800)];
-    const boomRange = frequencyData[frequencyPicker(settings.fftSize, sampleRate, 43)];
-    return relayPositions(highRange, midRange, lowRange, boomRange)
+    // supporting singers -- AC/DC great!
+    const onOff = gainDetector(frequencyData, sampleRate, 930, 1400, 200);
+
+    // lead singer -- AC/DC great!
+    //const onOff = gainDetector(frequencyData, sampleRate, 366, 580, 210);
+    
+    // Guitars -- AC/DC great!
+    //const onOff = gainDetector(frequencyData, sampleRate, 280, 486, 173);
+    
+    // Bass -- AC/DC great!
+    //const onOff = gainDetector(frequencyData, sampleRate, 21, 107, 243);
+
+    // Boom -- AC/DC good
+    //const onOff = gainDetector(frequencyData, sampleRate, 0, 2000, 255);
+
+    return relayPositions(onOff);
 }
 
-const relayPositions = (high, mid, low, boom) => {
+const relayPositions = (boom) => {
     return {
-        high: visualize(high, settings.highThresholdMin),
-        mid: visualize(mid, settings.midThresholdMin),
-        low: visualize(low, settings.lowThresholdMin),
-        boom: visualize(boom, settings.boomThresholdMin)
+        high: "off",
+        mid: "off",
+        low: "off",
+        boom: boom
     }
 }
 
