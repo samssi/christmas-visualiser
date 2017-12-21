@@ -55,7 +55,6 @@ const frequencyPicker = (fftSize, samplerate, hz) => {
 const gainDetector = (frequencyData, sampleRate, low, high, dbRate) => {
     const lowN = frequencyPicker(settings.fftSize, sampleRate, low);
     const highN = frequencyPicker(settings.fftSize, sampleRate, high);
-    //200-350
     for (let i = lowN; i < highN; i++) {
         if (frequencyData[i] >= dbRate) {
             return "on";
@@ -63,21 +62,36 @@ const gainDetector = (frequencyData, sampleRate, low, high, dbRate) => {
     }
     return "off";
 } 
-
+/*
+See: https://www.teachmeaudio.com/mixing/techniques/audio-spectrum/
+General options:
+    Sub-bass        20 to 60 Hz
+    Bass            60 to 250 Hz
+    Low midrange    250 to 500 Hz
+    Midrange        500 Hz to 2 kHz
+    Upper midrange	2 to 4 kHz
+    Presence	    4 to 6 kHz
+    Brilliance	    6 to 20 kHz
+*/
 const pickSample = (frequencyData, sampleRate) => {
     // supporting singers -- AC/DC great!
+    // highRange
     const onOff = gainDetector(frequencyData, sampleRate, 930, 1400, 200);
 
     // lead singer -- AC/DC great!
+    // midRange
     //const onOff = gainDetector(frequencyData, sampleRate, 366, 580, 210);
     
     // Guitars -- AC/DC great!
+    // lowMidRange
     //const onOff = gainDetector(frequencyData, sampleRate, 280, 486, 173);
     
     // Bass -- AC/DC great!
+    // subBass
     //const onOff = gainDetector(frequencyData, sampleRate, 21, 107, 243);
 
     // Boom -- AC/DC good
+    // 
     //const onOff = gainDetector(frequencyData, sampleRate, 0, 2000, 255);
 
     return relayPositions(onOff);
@@ -88,8 +102,7 @@ const relayPositions = (boom) => {
         high: "off",
         mid: "off",
         low: "off",
+        bass: "off",
         boom: boom
     }
 }
-
-const visualize = (frequency, minThreshold) => frequency > minThreshold ? "on" : "off";
