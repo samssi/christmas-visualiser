@@ -4,7 +4,8 @@ import { relayClient } from "./axios-client";
 
 let prevTime = Date.now();
 const settings = {
-    fftSize: 1024
+    fftSize: 1024,
+    samplingTime: 80
 }
 
 export const render = () => {
@@ -61,8 +62,6 @@ const gainDetector = (frequencyData, sampleRate, low, high, dbRate) => {
         }
     }
     return "off";
-    
-
 } 
 
 const pickSample = (frequencyData, sampleRate) => {
