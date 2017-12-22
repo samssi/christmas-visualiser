@@ -3,8 +3,16 @@ import { setInterval } from "timers";
 import { relayClient } from "./axios-client";
 
 let prevTime = Date.now();
+
+// https://developer.mozilla.org/fi/docs/Web/API/AnalyserNode
 const settings = {
     fftSize: 1024,
+    // default 0, no averaging done
+    smoothingTimeConstant: 0.8,
+    // double default -100
+    minDecibels: -100,
+    // double default -30, max 0
+    maxDecibels: -15,
     samplingTime: 80
 }
 
@@ -15,8 +23,11 @@ export const render = () => {
     const audioSrc = audioContext.createMediaElementSource(audio);
     const analyser = audioContext.createAnalyser();
     const sampleRate = audioContext.sampleRate;
-    console.log(sampleRate);
     analyser.fftSize = settings.fftSize;
+    analyser.minDecibels = settings.minDecibels;
+    analyser.maxDecibels = settings.maxDecibels;
+    analyser.smoothingTimeConstant = settings.smoothingTimeConstant;
+
 
     audioSrc.connect(analyser);
     audioSrc.connect(audioContext.destination);
@@ -28,7 +39,7 @@ export const render = () => {
        analyser.getByteFrequencyData(frequencyData);
        const currentTime = Date.now();
        if (currentTime - prevTime > settings.samplingTime) {
-            const currentRelayPositions = pickSample(frequencyData, sampleRate);
+            const currentRelayPositions = pickSampleGeneric(frequencyData, sampleRate);
             post(currentRelayPositions);
             console.log(currentRelayPositions);
             prevTime = currentTime;
@@ -94,6 +105,15 @@ const pickSample = (frequencyData, sampleRate) => {
     // 
     const boom = gainDetector(frequencyData, sampleRate, 0, 2000, 255);
 
+    return relayPositions(high, mid, low, bass, boom);
+}
+
+const pickSampleGeneric = (frequencyData, sampleRate) => {
+    const high = gainDetector(frequencyData, sampleRate, 6000, 20000, 150);
+    const mid = gainDetector(frequencyData, sampleRate, 500, 2000, 180);
+    const low = gainDetector(frequencyData, sampleRate, 250, 500, 180);
+    const bass = gainDetector(frequencyData, sampleRate, 60, 250, 180);
+    const boom = gainDetector(frequencyData, sampleRate, 0, 2000, 255);
     return relayPositions(high, mid, low, bass, boom);
 }
 
