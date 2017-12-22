@@ -23,8 +23,8 @@ export const render = () => {
     const renderFrame = () => {
        requestAnimationFrame(renderFrame);
        analyser.fftSize = settings.fftSize;
-       analyser.minDecibels = settings.minDecibels;
-       analyser.maxDecibels = settings.maxDecibels;
+       analyser.minDecibels = freqAnalysisRanges.minDecibels;
+       analyser.maxDecibels = freqAnalysisRanges.maxDecibels;
        analyser.smoothingTimeConstant = settings.smoothingTimeConstant;
        analyser.getByteFrequencyData(frequencyData);
        const currentTime = Date.now();
@@ -76,6 +76,7 @@ General options:
 */
 const pickSampleGeneric = (frequencyData, sampleRate) => {
     //console.log(freqAnalysisRanges)
+    console.log(freqAnalysisRanges.minDecibels + " " + freqAnalysisRanges.maxDecibels)
     const high = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.highMinHz, freqAnalysisRanges.highMaxHz, freqAnalysisRanges.highPeak);
     const mid = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.midMinHz, freqAnalysisRanges.midMaxHz, freqAnalysisRanges.midPeak);
     const low = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.lowMinHz, freqAnalysisRanges.lowMaxHz, freqAnalysisRanges.lowPeak);

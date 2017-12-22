@@ -2,16 +2,14 @@ import * as preloader from "../presets/preloader"
 
 export const settings = {
     fftSize: 1024,
-    // default 0, no averaging done
     smoothingTimeConstant: 0.8,
-    // double default -100
-    minDecibels: -100,
-    // double default -30, max 0
-    maxDecibels: -30,
     samplingTime: 80
 }
 
 export const freqAnalysisRanges = {
+    minDecibels: -100,
+    maxDecibels: -30,
+
     highMinHz: 6000, 
     highMaxHz: 20000,
     highPeak: 150,
@@ -33,11 +31,11 @@ export const freqAnalysisRanges = {
     boomPeak: 255
 }    
 
-export const minDecibels = () => settings.minDecibels = document.getElementById("minDecibels").value;
-export const maxDecibels = () => settings.maxDecibels = document.getElementById("maxDecibels").value;
+export const minDecibels = () => freqAnalysisRanges.minDecibels = document.getElementById("minDecibels").value;
+export const maxDecibels = () => freqAnalysisRanges.maxDecibels = document.getElementById("maxDecibels").value;
 export const samplingTime = () => settings.samplingTime = document.getElementById("samplingTime").value;
-document.getElementById("minDecibels").value = settings.minDecibels;
-document.getElementById("maxDecibels").value = settings.maxDecibels;
+document.getElementById("minDecibels").value = freqAnalysisRanges.minDecibels;
+document.getElementById("maxDecibels").value = freqAnalysisRanges.maxDecibels;
 document.getElementById("samplingTime").value = settings.samplingTime;
 window.minDecibels = minDecibels;
 window.maxDecibels = maxDecibels;

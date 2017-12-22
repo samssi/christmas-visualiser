@@ -62,6 +62,13 @@ export const loadPreset = () => {
 
     document.getElementById("boomPeak").value = preload.boomPeak;
     freqAnalysisRanges.boomPeak = preload.boomPeak;
+
+    document.getElementById("minDecibels").value = preload.minDecibels;
+    freqAnalysisRanges.minDecibels = preload.minDecibels;
+
+    document.getElementById("maxDecibels").value = preload.maxDecibels;
+    freqAnalysisRanges.maxDecibels = preload.maxDecibels;
+    
 }
 
 export const outputExportJson = () => {

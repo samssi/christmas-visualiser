@@ -13,7 +13,7 @@ const renderCss = () => {
 export const renderAudio = () => {
     const audio = document.createElement("audio");
     audio.id = "audio-field"
-    audio.src = "/mp3/sample2.mp3";
+    audio.src = "/mp3/sample.mp3";
     body.appendChild(audio);
 }
 

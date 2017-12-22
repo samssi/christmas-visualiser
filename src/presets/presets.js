@@ -2,6 +2,8 @@ export const preload =
     [
         {
             name: "Default",
+            minDecibels: -100,
+            maxDecibels: -30,
             highMinHz: 6000, 
             highMaxHz: 20000,
             highPeak: 150,
@@ -20,6 +22,8 @@ export const preload =
         },
         {
             name: "AC/DC - Thunderstruck",
+            minDecibels: -100,
+            maxDecibels: -30,
             highMinHz: 930, 
             highMaxHz: 1400,
             highPeak: 200,
@@ -37,6 +41,8 @@ export const preload =
             boomPeak: 255
     },
     {
+        "minDecibels": "-100",
+        "maxDecibels": "-30",
         "highMinHz": "0",
         "highMaxHz": "0",
         "highPeak": "0",
@@ -53,5 +59,25 @@ export const preload =
         "boomMaxHz": "0",
         "boomPeak": "0",
         "name": "Off"
+      },
+      {
+        "minDecibels": -100,
+        "maxDecibels": "-13",
+        "highMinHz": 6000,
+        "highMaxHz": 20000,
+        "highPeak": "135",
+        "midMinHz": 500,
+        "midMaxHz": 2000,
+        "midPeak": "189",
+        "lowMinHz": 250,
+        "lowMaxHz": 500,
+        "lowPeak": "192",
+        "bassMinHz": 60,
+        "bassMaxHz": 250,
+        "bassPeak": "217",
+        "boomMinHz": 0,
+        "boomMaxHz": 2000,
+        "boomPeak": "235",
+        "name": "Dragonforce"
       }
 ]
