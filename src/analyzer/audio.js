@@ -76,33 +76,43 @@ General options:
 const pickSample = (frequencyData, sampleRate) => {
     // supporting singers -- AC/DC great!
     // highRange
-    const onOff = gainDetector(frequencyData, sampleRate, 930, 1400, 200);
+    const high = gainDetector(frequencyData, sampleRate, 930, 1400, 200);
 
     // lead singer -- AC/DC great!
     // midRange
-    //const onOff = gainDetector(frequencyData, sampleRate, 366, 580, 210);
+    const mid = gainDetector(frequencyData, sampleRate, 366, 580, 210);
     
     // Guitars -- AC/DC great!
     // lowMidRange
-    //const onOff = gainDetector(frequencyData, sampleRate, 280, 486, 173);
+    const low = gainDetector(frequencyData, sampleRate, 280, 486, 173);
     
     // Bass -- AC/DC great!
     // subBass
-    //const onOff = gainDetector(frequencyData, sampleRate, 21, 107, 243);
+    const bass = gainDetector(frequencyData, sampleRate, 21, 107, 243);
 
     // Boom -- AC/DC good
     // 
-    //const onOff = gainDetector(frequencyData, sampleRate, 0, 2000, 255);
+    const boom = gainDetector(frequencyData, sampleRate, 0, 2000, 255);
 
-    return relayPositions(onOff);
+    return relayPositions(high, mid, low, bass, boom);
 }
 
-const relayPositions = (boom) => {
+const relayPositions = (high, mid, low, bass, boom) => {
+    return {
+        high: high,
+        mid: mid,
+        low: low,
+        bass: bass,
+        boom: boom
+    }
+}
+
+const relayPositionsTest = (high, mid, low, bass, boom) => {
     return {
         high: "off",
         mid: "off",
-        low: "off",
+        low: low,
         bass: "off",
-        boom: boom
+        boom: "off"
     }
 }
