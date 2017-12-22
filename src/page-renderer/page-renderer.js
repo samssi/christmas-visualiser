@@ -6,7 +6,7 @@ const renderCss = () => {
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.type = "text/css";
-    link.href = "/css/reset.css";
+    link.href = "/css/main.css";
     head.appendChild(link);
 }
 

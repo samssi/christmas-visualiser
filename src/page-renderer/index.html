@@ -2,9 +2,64 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Permanent+Marker" rel="stylesheet">
     <title>Christmas visualiser</title>
   </head>
   <body>
-      <div id="root"></div>
+      <div id="root">
+      </div>
+      <div class="postit">
+      
+          <div class="freqSettings">
+              <h2>Freqency Analysis Settings</h2>
+              <ul>
+                <li>
+                  <h2>High</h2>
+                  Min Hz: <input id="highMinHz" type="number" onkeyup="highMinHz()" onchange="highMinHz()"/> - Max Hz <input id="highMaxHz" type="number" onkeyup="highMaxHz()" onchange="highMaxHz()"/> - Peak: <input id="highPeak" type="number" onkeyup="highPeak()" onchange="highPeak()"/> (choose peak between 0-255)
+                </li>
+                <li>
+                    <h2>Mid</h2>
+                    Min Hz: <input id="midMinHz" type="number" onkeyup="midMinHz()" onchange="midMinHz()"/> - Max Hz <input id="midMaxHz" type="number" onkeyup="midMaxHz()" onchange="midMaxHz()"/> - Peak: <input id="midPeak" type="number" onkeyup="midPeak()" onchange="midPeak()"/> (choose peak between 0-255)
+                  </li>
+                <li>
+                  <h2>Low</h2>
+                  Min Hz: <input id="lowMinHz" type="number" onkeyup="lowMinHz()" onchange="lowMinHz()"/> - Max Hz <input id="lowMaxHz" type="number" onkeyup="lowMaxHz()" onchange="lowMaxHz()"/> - Peak: <input id="lowPeak" type="number" onkeyup="lowPeak()" onchange="lowPeak()"/> (choose peak between 0-255)
+                </li>
+                <li>
+                  <h2>Bass</h2>
+                  Min Hz: <input id="bassMinHz" type="number" onkeyup="bassMinHz()" onchange="bassMinHz()"/> - Max Hz <input id="bassMaxHz" type="number" onkeyup="bassMaxHz()" onchange="bassMaxHz()"/> - Peak: <input id="bassPeak" type="number" onkeyup="bassPeak()" onchange="bassPeak()"/> (choose peak between 0-255)
+                </li>
+                <li>
+                  <h2>Boom</h2>
+                  Min Hz: <input id="boomMinHz" type="number" onkeyup="boomMinHz()" onchange="boomMinHz()"/> - Max Hz <input id="boomMaxHz" type="number" onkeyup="boomMaxHz()" onchange="boomMaxHz()"/> - Peak: <input id="boomPeak" type="number" onkeyup="boomPeak()" onchange="boomPeak()"/> (choose peak between 0-255)
+                </li>
+              </ul>
+          </div>
+
+        <div class="decibelSettings">
+          <h2>Decibel Settings</h2>
+          <ul>
+            <li>
+              <input id="minDecibels" type="number" onkeyup="minDecibels()" onchange="minDecibels()"/>
+              <label for="minDecibels">Minimum decibels (can't be higher than max)</label>
+            </li>
+            <li>
+              <input id="maxDecibels" type="number" onkeyup="maxDecibels()" onchange="maxDecibels()"/>
+              <label for="maxDecibels">Maximum decibels</label>
+            </li>
+          </ul>
+      </div> 
+
+      <div class="sampleSettings">
+        <h2>Sample Settings</h2>
+        <ul>
+          <li>
+            <input id="samplingTime" type="number" value="" onkeyup="samplingTime()" onchange="samplingTime()" />
+            <label for="samplingTime">Sampling time in milliseconds on how often the audio data is sampled</label>
+          </li>
+        </ul>
+        </div>
+      </div>
+      </div>
   </body>
 </html>

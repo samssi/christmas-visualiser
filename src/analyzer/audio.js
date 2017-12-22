@@ -1,20 +1,11 @@
 import * as R from "ramda";
 import { setInterval } from "timers";
 import { relayClient } from "./axios-client";
+import { settings, freqAnalysisRanges } from "../ui/settings"
 
 let prevTime = Date.now();
 
 // https://developer.mozilla.org/fi/docs/Web/API/AnalyserNode
-const settings = {
-    fftSize: 1024,
-    // default 0, no averaging done
-    smoothingTimeConstant: 0.8,
-    // double default -100
-    minDecibels: -100,
-    // double default -30, max 0
-    maxDecibels: -15,
-    samplingTime: 80
-}
 
 export const render = () => {
     const audioContext = new AudioContext();
@@ -23,11 +14,6 @@ export const render = () => {
     const audioSrc = audioContext.createMediaElementSource(audio);
     const analyser = audioContext.createAnalyser();
     const sampleRate = audioContext.sampleRate;
-    analyser.fftSize = settings.fftSize;
-    analyser.minDecibels = settings.minDecibels;
-    analyser.maxDecibels = settings.maxDecibels;
-    analyser.smoothingTimeConstant = settings.smoothingTimeConstant;
-
 
     audioSrc.connect(analyser);
     audioSrc.connect(audioContext.destination);
@@ -36,11 +22,15 @@ export const render = () => {
 
     const renderFrame = () => {
        requestAnimationFrame(renderFrame);
+       analyser.fftSize = settings.fftSize;
+       analyser.minDecibels = settings.minDecibels;
+       analyser.maxDecibels = settings.maxDecibels;
+       analyser.smoothingTimeConstant = settings.smoothingTimeConstant;
        analyser.getByteFrequencyData(frequencyData);
        const currentTime = Date.now();
        if (currentTime - prevTime > settings.samplingTime) {
             const currentRelayPositions = pickSampleGeneric(frequencyData, sampleRate);
-            post(currentRelayPositions);
+            //post(currentRelayPositions);
             console.log(currentRelayPositions);
             prevTime = currentTime;
        } 
@@ -109,12 +99,16 @@ const pickSample = (frequencyData, sampleRate) => {
 }
 
 const pickSampleGeneric = (frequencyData, sampleRate) => {
-    const high = gainDetector(frequencyData, sampleRate, 6000, 20000, 150);
-    const mid = gainDetector(frequencyData, sampleRate, 500, 2000, 180);
-    const low = gainDetector(frequencyData, sampleRate, 250, 500, 180);
-    const bass = gainDetector(frequencyData, sampleRate, 60, 250, 180);
-    const boom = gainDetector(frequencyData, sampleRate, 0, 2000, 255);
+    const high = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.highMinHz, freqAnalysisRanges.highMaxHz, freqAnalysisRanges.highPeak);
+    const mid = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.midMinHz, freqAnalysisRanges.midMaxHz, freqAnalysisRanges.midPeak);
+    const low = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.lowMinHz, freqAnalysisRanges.lowMaxHz, freqAnalysisRanges.lowPeak);
+    const bass = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.bassMinHz, freqAnalysisRanges.bassMaxHz, freqAnalysisRanges.bassPeak);
+    const boom = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.boomMinHz, freqAnalysisRanges.boomMaxHz, freqAnalysisRanges.boomPeak);
     return relayPositions(high, mid, low, bass, boom);
+}
+
+const log = (label, min, max, peak) => {
+    console.log(`${label}: min ${min}, max ${max}, peak ${peak}`);
 }
 
 const relayPositions = (high, mid, low, bass, boom) => {
