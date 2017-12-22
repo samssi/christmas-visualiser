@@ -30,8 +30,8 @@ export const render = () => {
        const currentTime = Date.now();
        if (currentTime - prevTime > settings.samplingTime) {
             const currentRelayPositions = pickSampleGeneric(frequencyData, sampleRate);
-            post(currentRelayPositions);
-            console.log(currentRelayPositions);
+            //post(currentRelayPositions);
+            //console.log(currentRelayPositions);
             prevTime = currentTime;
        } 
     }
@@ -99,6 +99,7 @@ const pickSample = (frequencyData, sampleRate) => {
 }
 
 const pickSampleGeneric = (frequencyData, sampleRate) => {
+    console.log(freqAnalysisRanges)
     const high = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.highMinHz, freqAnalysisRanges.highMaxHz, freqAnalysisRanges.highPeak);
     const mid = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.midMinHz, freqAnalysisRanges.midMaxHz, freqAnalysisRanges.midPeak);
     const low = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.lowMinHz, freqAnalysisRanges.lowMaxHz, freqAnalysisRanges.lowPeak);

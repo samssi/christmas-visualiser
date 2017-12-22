@@ -1,3 +1,5 @@
+import * as preloader from "../presets/preloader"
+
 export const settings = {
     fftSize: 1024,
     // default 0, no averaging done
@@ -9,8 +11,7 @@ export const settings = {
     samplingTime: 80
 }
 
-// const mid = gainDetector(frequencyData, sampleRate, 500, 2000, 180);
-export let freqAnalysisRanges = {
+export const freqAnalysisRanges = {
     highMinHz: 6000, 
     highMaxHz: 20000,
     highPeak: 150,
@@ -91,3 +92,5 @@ document.getElementById("boomPeak").value = freqAnalysisRanges.boomPeak;
 window.boomMinHz = boomMinHz;
 window.boomMaxHz = boomMaxHz;
 window.boomPeak = boomPeak;
+
+preloader.preloadOptions();
