@@ -35,5 +35,23 @@ export const preload =
             boomMinHz: 0,
             boomMaxHz: 2000,
             boomPeak: 255
-    }
+    },
+    {
+        "highMinHz": "0",
+        "highMaxHz": "0",
+        "highPeak": "0",
+        "midMinHz": "0",
+        "midMaxHz": "0",
+        "midPeak": "0",
+        "lowMinHz": "0",
+        "lowMaxHz": "0",
+        "lowPeak": "0",
+        "bassMinHz": "0",
+        "bassMaxHz": "0",
+        "bassPeak": "0",
+        "boomMinHz": "0",
+        "boomMaxHz": "0",
+        "boomPeak": "0",
+        "name": "Off"
+      }
 ]

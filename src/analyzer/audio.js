@@ -30,8 +30,8 @@ export const render = () => {
        const currentTime = Date.now();
        if (currentTime - prevTime > settings.samplingTime) {
             const currentRelayPositions = pickSampleGeneric(frequencyData, sampleRate);
-            //post(currentRelayPositions);
-            //console.log(currentRelayPositions);
+            post(currentRelayPositions);
+            console.log(currentRelayPositions);
             prevTime = currentTime;
        } 
     }
@@ -74,30 +74,6 @@ General options:
     Presence	    4 to 6 kHz
     Brilliance	    6 to 20 kHz
 */
-const pickSample = (frequencyData, sampleRate) => {
-    // supporting singers -- AC/DC great!
-    // highRange
-    const high = gainDetector(frequencyData, sampleRate, 930, 1400, 200);
-
-    // lead singer -- AC/DC great!
-    // midRange
-    const mid = gainDetector(frequencyData, sampleRate, 366, 580, 210);
-    
-    // Guitars -- AC/DC great!
-    // lowMidRange
-    const low = gainDetector(frequencyData, sampleRate, 280, 486, 173);
-    
-    // Bass -- AC/DC great!
-    // subBass
-    const bass = gainDetector(frequencyData, sampleRate, 21, 107, 243);
-
-    // Boom -- AC/DC good
-    // 
-    const boom = gainDetector(frequencyData, sampleRate, 0, 2000, 255);
-
-    return relayPositions(high, mid, low, bass, boom);
-}
-
 const pickSampleGeneric = (frequencyData, sampleRate) => {
     //console.log(freqAnalysisRanges)
     const high = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.highMinHz, freqAnalysisRanges.highMaxHz, freqAnalysisRanges.highPeak);
@@ -108,10 +84,6 @@ const pickSampleGeneric = (frequencyData, sampleRate) => {
     return relayPositions(high, mid, low, bass, boom);
 }
 
-const log = (label, min, max, peak) => {
-    console.log(`${label}: min ${min}, max ${max}, peak ${peak}`);
-}
-
 const relayPositions = (high, mid, low, bass, boom) => {
     return {
         high: high,
@@ -119,15 +91,5 @@ const relayPositions = (high, mid, low, bass, boom) => {
         low: low,
         bass: bass,
         boom: boom
-    }
-}
-
-const relayPositionsTest = (high, mid, low, bass, boom) => {
-    return {
-        high: "off",
-        mid: "off",
-        low: low,
-        bass: "off",
-        boom: "off"
     }
 }
