@@ -5,7 +5,7 @@ export const settings = {
     // double default -100
     minDecibels: -100,
     // double default -30, max 0
-    maxDecibels: -15,
+    maxDecibels: -30,
     samplingTime: 80
 }
 

@@ -30,7 +30,7 @@ export const render = () => {
        const currentTime = Date.now();
        if (currentTime - prevTime > settings.samplingTime) {
             const currentRelayPositions = pickSampleGeneric(frequencyData, sampleRate);
-            //post(currentRelayPositions);
+            post(currentRelayPositions);
             console.log(currentRelayPositions);
             prevTime = currentTime;
        } 
