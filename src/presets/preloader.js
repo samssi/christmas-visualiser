@@ -64,6 +64,13 @@ export const loadPreset = () => {
     freqAnalysisRanges.boomPeak = preload.boomPeak;
 }
 
+export const outputExportJson = () => {
+    const jsonField = document.getElementById("jsonField");
+    const exportName = document.getElementById("exportName");
+    const withNameRanges = freqAnalysisRanges;
+    withNameRanges.name = exportName.value;
+    jsonField.innerHTML = JSON.stringify(freqAnalysisRanges, null, 2);
+}
 
-
-window.loadPreset = loadPreset
+window.outputExportJson = outputExportJson;
+window.loadPreset = loadPreset;

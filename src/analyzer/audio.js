@@ -99,7 +99,7 @@ const pickSample = (frequencyData, sampleRate) => {
 }
 
 const pickSampleGeneric = (frequencyData, sampleRate) => {
-    console.log(freqAnalysisRanges)
+    //console.log(freqAnalysisRanges)
     const high = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.highMinHz, freqAnalysisRanges.highMaxHz, freqAnalysisRanges.highPeak);
     const mid = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.midMinHz, freqAnalysisRanges.midMaxHz, freqAnalysisRanges.midPeak);
     const low = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.lowMinHz, freqAnalysisRanges.lowMaxHz, freqAnalysisRanges.lowPeak);

@@ -61,8 +61,17 @@
             <label for="samplingTime">Sampling time in milliseconds on how often the audio data is sampled</label>
           </li>
         </ul>
-        </div>
       </div>
+      <div>
+        <h2>Poor man's export options</h2>
+        <label for="exportName">Presetname:</label>
+        <input id="exportName" value="" />
+        <a href="#" onclick="outputExportJson()">Export settings...</a>
       </div>
+      <div>
+        <textarea id="jsonField" cols="105" rows="18"></textarea>
+      </div>
+    </div>
+  </div>
   </body>
 </html>
