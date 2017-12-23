@@ -3,7 +3,7 @@ import * as preloader from "../presets/preloader"
 export const settings = {
     fftSize: 1024,
     smoothingTimeConstant: 0.8,
-    samplingTime: 80
+    samplingTime: 150
 }
 
 export const freqAnalysisRanges = {

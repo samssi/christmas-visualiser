@@ -7,6 +7,9 @@ let prevTime = Date.now();
 let file = "None";
 let running = false;
 let test = new Date();
+let prevRelayPositions = "";
+let packetLoss = 0
+let packetSuccess = 0
 
 const audioContext = new AudioContext();
 const audio = document.getElementById("audio-field");
@@ -45,8 +48,15 @@ const renderFrame = () => {
     const currentTime = Date.now();
     if (currentTime - prevTime > settings.samplingTime) {
         const currentRelayPositions = pickSampleGeneric(frequencyData, sampleRate);
-        post(currentRelayPositions);
-        console.log(currentRelayPositions);
+        if (JSON.stringify(prevRelayPositions) !== JSON.stringify(currentRelayPositions)) {
+            console.log("Sending")
+            post(currentRelayPositions);
+        }
+        else {
+            console.log("Same relay position - not sending");
+        }
+        prevRelayPositions = currentRelayPositions;
+        
         prevTime = currentTime;
     }
     frame();
@@ -54,8 +64,15 @@ const renderFrame = () => {
 
 const post = (currentRelayPositions) => {
     relayClient.post("/api/relay", currentRelayPositions)
-        .then((response) => console.log(response))
-        .catch((error) => console.log(error));
+        .then((response) => {
+            packetSuccess++;
+            console.log("Packet success! Total: " + packetSuccess);
+        })
+        .catch((error) => {
+            packetLoss++;
+            console.log("Package lost! Total: " + packetLoss);
+        }
+        );
 }
 
 const frequencyPicker = (fftSize, samplerate, hz) => {
