@@ -4,39 +4,52 @@ import { relayClient } from "./axios-client";
 import { settings, freqAnalysisRanges } from "../ui/settings"
 
 let prevTime = Date.now();
+let file = "None";
+let running = false;
+let test = new Date();
 
+const audioContext = new AudioContext();
+const audio = document.getElementById("audio-field");
+const audioSrc = audioContext.createMediaElementSource(audio);
+const canvas = document.getElementById("canvas-field");
+const analyser = audioContext.createAnalyser();
+const sampleRate = audioContext.sampleRate;
 // https://developer.mozilla.org/fi/docs/Web/API/AnalyserNode
 
-export const render = () => {
-    const audioContext = new AudioContext();
-    const audio = document.getElementById("audio-field");
-    const canvas = document.getElementById("canvas-field");
-    const audioSrc = audioContext.createMediaElementSource(audio);
-    const analyser = audioContext.createAnalyser();
-    const sampleRate = audioContext.sampleRate;
-
+export const analyse = (playFile) => {
+    file = playFile;
+    file !== "None" ? audio.src = "mp3/" + file : "";
+    test = new Date();
     audioSrc.connect(analyser);
     audioSrc.connect(audioContext.destination);
     
-    const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-
-    const renderFrame = () => {
-       requestAnimationFrame(renderFrame);
-       analyser.fftSize = settings.fftSize;
-       analyser.minDecibels = freqAnalysisRanges.minDecibels;
-       analyser.maxDecibels = freqAnalysisRanges.maxDecibels;
-       analyser.smoothingTimeConstant = settings.smoothingTimeConstant;
-       analyser.getByteFrequencyData(frequencyData);
-       const currentTime = Date.now();
-       if (currentTime - prevTime > settings.samplingTime) {
-            const currentRelayPositions = pickSampleGeneric(frequencyData, sampleRate);
-            post(currentRelayPositions);
-            console.log(currentRelayPositions);
-            prevTime = currentTime;
-       } 
+    file !== "None" ? audio.play() : audio.pause();
+    if (!running) {
+        console.log("Starting analyzer");
+        frame();
     }
-    audio.play();
-    renderFrame();
+}
+
+const frame = () => {
+    running = true;
+    requestAnimationFrame(() => { renderFrame(analyser, renderFrame) });
+}
+
+const renderFrame = () => {
+    const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+    analyser.fftSize = settings.fftSize;
+    analyser.minDecibels = freqAnalysisRanges.minDecibels;
+    analyser.maxDecibels = freqAnalysisRanges.maxDecibels;
+    analyser.smoothingTimeConstant = settings.smoothingTimeConstant;
+    analyser.getByteFrequencyData(frequencyData);
+    const currentTime = Date.now();
+    if (currentTime - prevTime > settings.samplingTime) {
+        const currentRelayPositions = pickSampleGeneric(frequencyData, sampleRate);
+        post(currentRelayPositions);
+        console.log(currentRelayPositions);
+        prevTime = currentTime;
+    }
+    frame();
 }
 
 const post = (currentRelayPositions) => {
@@ -75,8 +88,6 @@ General options:
     Brilliance	    6 to 20 kHz
 */
 const pickSampleGeneric = (frequencyData, sampleRate) => {
-    //console.log(freqAnalysisRanges)
-    console.log(freqAnalysisRanges.minDecibels + " " + freqAnalysisRanges.maxDecibels)
     const high = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.highMinHz, freqAnalysisRanges.highMaxHz, freqAnalysisRanges.highPeak);
     const mid = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.midMinHz, freqAnalysisRanges.midMaxHz, freqAnalysisRanges.midPeak);
     const low = gainDetector(frequencyData, sampleRate, freqAnalysisRanges.lowMinHz, freqAnalysisRanges.lowMaxHz, freqAnalysisRanges.lowPeak);

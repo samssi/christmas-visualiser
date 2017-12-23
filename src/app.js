@@ -10,6 +10,3 @@ const createCanvas = () => {
 }
 
 const canvas = createCanvas();
-pageRenderer.renderAudio();
-
-audio.render();
