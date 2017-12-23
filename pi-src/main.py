@@ -33,11 +33,11 @@ def bassRelays(status):
         changeState(relayIn2, status)
 
 def lowRelays(status):
-        changeState(relayIn3, status)
+	changeState(relayIn3, status)
         changeState(relayIn4, status)
 
 def midRelays(status):
-        changeState(relayIn5, status)
+	changeState(relayIn5, status)
         changeState(relayIn6, status)
 
 def highRelays(status):
@@ -55,9 +55,9 @@ def allRelays(status):
         changeState(relayIn8, status)
 
 def changeState(relay, status):
-        if (status == "on"):
+        if (status == "1"):
                 GPIO.output(relay, GPIO.LOW)
-        elif (status == "off"):
+        elif (status == "0"):
                 GPIO.output(relay, GPIO.HIGH)
 
 
@@ -67,17 +67,17 @@ allRelays("on")
 @app.route('/api/relay', methods=['POST'])
 def settings():
     request_json = request.get_json()
-    high = request_json.get("high")
-    mid = request_json.get("mid")
-    low = request_json.get("low")
-    bass = request_json.get("bass")
-    boom = request_json.get("boom")
+    high = request_json.get("h")
+    mid = request_json.get("m")
+    low = request_json.get("l")
+    bass = request_json.get("b")
+    boom = request_json.get("o")
 
-    if (boom == "on"):
+    if (boom == "1"):
         allRelays(boom)
     else:
         bassRelays(bass)
-        lowRelays(low)
-        midRelays(mid)
-        highRelays(high)
-    return "done"
+	lowRelays(low)
+	midRelays(mid)
+	highRelays(high)
+    return ""

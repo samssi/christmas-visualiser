@@ -88,10 +88,10 @@ const gainDetector = (frequencyData, sampleRate, low, high, dbRate) => {
     const highN = frequencyPicker(settings.fftSize, sampleRate, high);
     for (let i = lowN; i < highN; i++) {
         if (frequencyData[i] >= dbRate) {
-            return "on";
+            return "1";
         }
     }
-    return "off";
+    return "0";
 } 
 /*
 See: https://www.teachmeaudio.com/mixing/techniques/audio-spectrum/
@@ -115,10 +115,10 @@ const pickSampleGeneric = (frequencyData, sampleRate) => {
 
 const relayPositions = (high, mid, low, bass, boom) => {
     return {
-        high: high,
-        mid: mid,
-        low: low,
-        bass: bass,
-        boom: boom
+        h: high,
+        m: mid,
+        l: low,
+        b: bass,
+        o: boom
     }
 }
